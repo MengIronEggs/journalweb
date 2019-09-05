@@ -11,15 +11,11 @@ const isTest = () => {
 
 let def = {};
 
-// const domain = `mt.guoanfamily.com`;
 const domain = `mt.guoanfamily.com`;
-// const domainManagent = "172.16.44.233:9093/";
 const domainManagent = "mt.guoanfamily.com/ejmanage/";
 let dev = {
-    // INTERFACE: `https://${domain}/handbook/`,
     UPLOAD_IMAGE: `https://${domain}/handbook/imgupload`,
     UPLOAD_EDITOR_IMAGE: `https://${domain}/handbook/detailimgupload`,
-    // UPLOAD_FILE: `https://${domain}/handbook/HbfileSave`,
     UPLOAD_FILE: `https://${domainManagent}HbfileSave`,
     UPLOAD_TRIP: `https://${domain}/handbook/ImportTrip`,
     SOCKET: `wss://${domain}/handhabook/`,
