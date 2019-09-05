@@ -1,0 +1,372 @@
+<style scoped>
+    .container {
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+    }
+
+    .navigation {
+        width: 1rem;
+        background: #3e3f41;
+    }
+
+    .el-menu-vertical-demo {
+        border: none;
+    }
+
+    .el-menu-item {
+        border-bottom: 1px solid #afafaf;
+    }
+
+    .el-menu-item:last-child {
+        border: none;
+    }
+
+    .el-menu-item:first-child {
+        border-top: 1px solid #afafaf;
+    }
+
+    .main-section {
+        width: 100%;
+        padding: 20px;
+        overflow: auto;
+    }
+
+    .select-block {
+        height: 0.2rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+    }
+
+    .search-input {
+        width: 1.4rem;
+        margin-right: 40px;
+    }
+
+    .meetings-list {
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        flex-wrap: wrap;
+        padding-top: 20px;
+        margin: 0 -20px 0 -20px;
+    }
+
+    .list-item{
+        width: 1rem;
+        margin: 0 20px 20px 20px;
+    }
+
+    .meeting-item {
+
+        width: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        overflow: hidden;
+        height:1rem;
+       /* margin: 0 20px 20px 20px;*/
+        position: relative;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .tips{
+        font-size: 14px;
+        color: #fff;
+        text-align: center;
+        padding: 5px;
+        transition: .5s;
+    }
+
+    .list-item:hover .tips{
+        color: #409EFF;
+    }
+
+    .meeting-item:hover > .hover-content {
+        top: 0;
+    }
+
+    .hover-content {
+        border-radius: 10px;
+        transition: .3s;
+        position: absolute;
+        height: 100%;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        flex-wrap: wrap;
+    }
+
+    .hover-content > .btn-box {
+        width: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .footer {
+        padding: 30px 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    .footer .el-button {
+        width: 200px;
+    }
+
+    .add-input {
+        width: 100%;
+    }
+
+    .el-select {
+        width: 100%;
+    }
+
+    .clip-btn{
+        cursor: pointer;
+    }
+</style>
+<style >
+.MeetingList .el-input--suffix .el-input__inner{
+    height: 100%;
+    line-height: 1rem;
+    font-size: 0.07rem;
+}
+.MeetingList .el-button.is-circle{
+    height: 0.18rem;
+    width: 0.18rem;
+    padding: 0;
+    margin: 0;
+}
+</style>
+
+<template>
+    <div class="container MeetingList">
+        <!-- <nav class="navigation">
+            <el-menu
+                default-active="1"
+                class="el-menu-vertical-demo"
+                background-color="#3e3f41"
+                text-color="#fff"
+                active-text-color="#ffd04b">
+                <el-menu-item index="1">
+                    <i class="el-icon-menu"></i>
+                    <span slot="title">会议手册</span>
+                </el-menu-item>
+                <router-link to="/managementList">
+                    <el-menu-item index="2">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">行政管理</span>
+                    </el-menu-item>
+                </router-link>
+            </el-menu>
+        </nav> -->
+
+        <section class="main-section">
+            <div class="select-block">
+                <el-input
+                    class="search-input"
+                    placeholder="请输入内容"
+                    v-model="searchText"
+                    @keyup.native.enter="doSearch"
+                    clearable>
+                </el-input>
+
+                <el-button class="Inp_button" icon="el-icon-search" type="primary" circle @click="doSearch"></el-button>
+            </div>
+
+            <div class="meetings-list">
+                <div class="list-item" v-for="item in meetingData" :key="item.Id">
+                    <div class="meeting-item">
+                        {{item.Hbname}}
+                        <div class="hover-content" @click="doEdit(item.Id)">
+                            <div class="btn-box">
+                                <el-tooltip class="item" effect="dark" content="发布" :enterable="false" placement="top">
+                                    <el-button icon="el-icon-upload" type="primary" circle
+                                               @click.stop.prevent="doRelease(item.Id)"></el-button>
+                                </el-tooltip>
+                            </div>
+
+                            <div class="btn-box">
+                                <el-tooltip class="item" effect="dark" content="预览" :enterable="false" placement="top">
+                                    <el-button icon="el-icon-view" type="success" circle
+                                               @click.stop.prevent="doPreview(item.Id)"></el-button>
+                                </el-tooltip>
+                            </div>
+
+                            <div class="btn-box">
+                                <el-tooltip class="item" effect="dark" content="复制" :enterable="false" placement="top">
+                                    <el-button icon="el-icon-document" type="warning" circle
+                                               @click.stop.prevent="doCopy(item.Id)"></el-button>
+                                </el-tooltip>
+                            </div>
+
+                            <div class="btn-box">
+                                <el-tooltip class="item" effect="dark" content="删除" :enterable="false" placement="top">
+                                    <el-button icon="el-icon-delete" type="danger" circle
+                                               @click.stop.prevent="doDelete(item.Id)"></el-button>
+                                </el-tooltip>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="tips">点击空白处编辑</p>
+                </div>
+            </div>
+
+            <footer class="footer">
+                <el-button type="success" @click="addDialogVisible = true">新增会议</el-button>
+            </footer>
+        </section>
+
+        <!--发布提示框-->
+        <el-dialog
+            title="发布"
+            :visible.sync="releaseDialogVisible"
+            width="30%"
+        >
+            <label>访问地址: </label>
+            <el-input readonly :value="`https://mt.guoanfamily.com/handbookwap/#/?id=${releaseId}`">
+                <template slot="append">
+                    <i class="el-icon-document clip-btn"
+                       :data-clipboard-text="`https://mt.guoanfamily.com/handbookwap/#/?id=${releaseId}`"></i>
+                </template>
+            </el-input>
+
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="releaseDialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
+
+        <!--新增提示框-->
+        <el-dialog
+            title="新增会议"
+            :visible.sync="addDialogVisible"
+            width="30%"
+        >
+
+            <el-form label-width="80px">
+                <el-form-item label="会议名称">
+                    <el-input
+                        class="add-input"
+                        placeholder="请输入会议名称"
+                        v-model="meetingName"
+                    >
+                    </el-input>
+                </el-form-item>
+            </el-form>
+
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="doAdd" :disabled="!meetingName">确 定</el-button>
+            </span>
+        </el-dialog>
+
+        <!--预览提示框-->
+        <preview :previewDialogVisible="previewDialogVisible" :url="previewUrl" @close="previewDialogVisible = false"/>
+    </div>
+</template>
+
+<script>
+    import preview from '../../components/Preview'
+    import Clipboard from 'clipboard';
+
+    export default {
+        data() {
+            return {
+                searchText: "",
+
+                meetingData: [],
+
+                releaseDialogVisible: false,
+                releaseId: '',
+
+                addDialogVisible: false,
+                meetingName: '',
+                copyId: '',
+
+                previewDialogVisible: false,
+                previewUrl: ``,
+            }
+        },
+
+        created() {
+            this.doSearch();
+        },
+
+        mounted() {
+            const clipboard = new Clipboard('.clip-btn');
+            clipboard.on('success', (e) => {
+                this.$showMsgTip("复制成功")
+            });
+        },
+
+        methods: {
+            doSearch() {
+                this.$get(`HandBookList?param=${this.searchText}`).then(({Data}) => {
+                    this.meetingData = Data;
+                });
+            },
+
+            doRelease(id) {
+                this.releaseDialogVisible = true;
+                this.releaseId = id;
+            },
+
+            doPreview(id) {
+                this.previewDialogVisible = true;
+                this.previewUrl = `#/?id=${id}&uid=${this.$getSession(this.KEYS.USER_ID)}`;
+
+            },
+
+            doEdit(id) {
+                this.$router.push(`/main/meeting/edit?mid=${id}`)
+            },
+
+            doDelete(id) {
+                this.$deleteConfirm(() => {
+                    this.$get(`HandBookDel?id=${id}`).then(({Code, Data, Msg}) => {
+                        if (Code === 200) {
+                            this.$showMsgTip(`删除成功`);
+                            this.doSearch();
+                        } else {
+                            this.$showErrorTip(`删除失败`)
+                        }
+                    })
+                })
+            },
+
+            doCopy(id) {
+                this.$get(`CopyHandBook?id=${id}`).then(res => {
+                    this.doSearch();
+                })
+            },
+
+            async doAdd() {
+                this.$post(`SaveHandBook`, {
+                    Hbname: this.meetingName,
+                }).then(({Code, Msg, Data}) => {
+                    if (Code === 200) {
+                        this.addDialogVisible = false;
+                        this.$showMsgTip(`创建成功`);
+                        this.$router.push(`/main/meeting/edit?mid=${Data}`);
+                    } else {
+                        this.$showErrorTip(Msg);
+                    }
+                })
+            },
+        },
+
+        computed: {},
+
+        components: {
+            preview
+        }
+    }
+</script>
